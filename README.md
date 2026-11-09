@@ -30,8 +30,48 @@ and clean software architecture, **not** to make money.
 
 ## Project Structure
 
-(will be filled in as the project grows)
+```text
+csharp-trading-bot/
+├── src/
+│   └── TradingBot/            # Main application
+│       ├── Models/            # Candle and other domain types
+│       ├── Data/              # CSV reader, candle sources
+│       ├── Indicators/        # SMA and other indicators (planned)
+│       ├── Strategies/        # IStrategy + implementations (planned)
+│       ├── Backtesting/       # Backtester, metrics (planned)
+│       └── Program.cs
+├── tests/
+│   └── TradingBot.Test/       # xUnit unit tests
+├── data/                      # Historical CSV files (not tracked by Git)
+├── docs/                      # Glossary, dev log
+├── TradingBot.slnx
+└── README.md
+```
 
+
+
+## Data Format
+
+Historical data comes from [data.binance.vision](https://data.binance.vision)
+(`spot → monthly → klines → BTCUSDT → 1d`). Place the CSV files in `data/`.
+
+Each row is one candle, comma-separated, **without a header**:
+
+| # | Field | Example |
+|---|-------|---------|
+| 1 | Open time (Unix, microseconds or milliseconds) | 1790812800000000 |
+| 2 | Open | 83623.59 |
+| 3 | High | 85273.65 |
+| 4 | Low | 83186.00 |
+| 5 | Close | 84880.05 |
+| 6 | Volume (base asset, BTC) | 16766.06 |
+| 7 | Close time | 1790899199999999 |
+| 8 | Quote asset volume (USDT) | 1409485416.76 |
+| 9 | Number of trades | 3018436 |
+| 10-12 | Taker buy volumes, ignored | |
+
+Only fields 1-6 are used. Prices are parsed with `CultureInfo.InvariantCulture`
+and stored as `decimal`.
 
 ## Development Log
 
