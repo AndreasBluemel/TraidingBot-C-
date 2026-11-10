@@ -11,30 +11,35 @@ namespace TradingBot
     {
         public List<Candle> Read(string path)
         {
-            var candles = new List<Candle>();
-
             using (var sr = new StreamReader(path))
             {
-                string? line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    if (string.IsNullOrWhiteSpace(line)) continue;
+                return Read(sr);
+            }
+        }
 
-                    string[] values = line.Split(',');
+        public List<Candle> Read(TextReader reader)
+        {
+            var candles = new List<Candle>();
 
-                    long raw = long.Parse(values[0], CultureInfo.InvariantCulture);
-                    DateTimeOffset time = values[0].Length >= 16
-                        ? DateTimeOffset.FromUnixTimeMilliseconds(raw / 1000)
-                        : DateTimeOffset.FromUnixTimeMilliseconds(raw);
+            string? line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
 
-                    decimal open = decimal.Parse(values[1], CultureInfo.InvariantCulture);
-                    decimal high = decimal.Parse(values[2], CultureInfo.InvariantCulture);
-                    decimal low = decimal.Parse(values[3], CultureInfo.InvariantCulture);
-                    decimal close = decimal.Parse(values[4], CultureInfo.InvariantCulture);
-                    decimal volume = decimal.Parse(values[5], CultureInfo.InvariantCulture);
+                string[] values = line.Split(',');
 
-                    candles.Add(new Candle(time, open, high, low, close, volume));
-                }
+                long raw = long.Parse(values[0], CultureInfo.InvariantCulture);
+                DateTimeOffset time = values[0].Length >= 16
+                    ? DateTimeOffset.FromUnixTimeMilliseconds(raw / 1000)
+                    : DateTimeOffset.FromUnixTimeMilliseconds(raw);
+
+                decimal open = decimal.Parse(values[1], CultureInfo.InvariantCulture);
+                decimal high = decimal.Parse(values[2], CultureInfo.InvariantCulture);
+                decimal low = decimal.Parse(values[3], CultureInfo.InvariantCulture);
+                decimal close = decimal.Parse(values[4], CultureInfo.InvariantCulture);
+                decimal volume = decimal.Parse(values[5], CultureInfo.InvariantCulture);
+
+                candles.Add(new Candle(time, open, high, low, close, volume));
             }
 
             return candles;
