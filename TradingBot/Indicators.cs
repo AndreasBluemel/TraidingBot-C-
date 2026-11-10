@@ -6,7 +6,7 @@ namespace TradingBot
 {
     public class Indicators
     {
-        public static List<decimal?> Sma(List<Candle> candles, int period)
+        public static List<decimal?> Sma(IReadOnlyList<Candle> candles, int period)
         {
 
             if (period < 1)

@@ -36,24 +36,20 @@ class Program
         //    Console.WriteLine($"{allCandles[i].Time:yyyy-MM-dd} Close: {allCandles[i].Close} SMA10: {sma10[i]}");
         //}
 
-        var fast = Indicators.Sma(allCandles, 10);
-        var slow = Indicators.Sma(allCandles, 30);
+        IStrategy strategy = new SmaCrossoverStrategy(10, 30);
 
-        for (int i = 1; i < allCandles.Count; i++)
+        for (int i = 0; i < allCandles.Count; i++)
         {
-            if (fast[i] == null || slow[i] == null || fast[i - 1] == null || slow[i - 1] == null)
-                continue;
+            Signal s = strategy.Decide(allCandles, i);
 
-            if (fast[i - 1] <= slow[i - 1] && fast[i] > slow[i])
-            {
-                Console.WriteLine($"{allCandles[i].Time:yyyy-MM-dd} BUY Close: {allCandles[i].Close:0.00}");
-            }
-            else if (fast[i - 1] >= slow[i - 1] && fast[i] < slow[i])
-            {
-                Console.WriteLine($"{allCandles[i].Time:yyyy-MM-dd} SELL Close: {allCandles[i].Close:0.00}");
-            }
-
+            if (s != Signal.Hold)
+                Console.WriteLine($"{allCandles[i].Time:yyyy-MM-dd} {s,-4} Close: {allCandles[i].Close:0.00}");
         }
+
+        BacktestResult result = new Backtester().Run(allCandles, strategy);
+        Console.WriteLine($"Strategy:     {result.ReturnPercent:0.00}%  ({result.TradeCount} trades)");
+        Console.WriteLine($"Buy and hold: {result.BuyAndHoldPercent:0.00}%");
+        Console.WriteLine($"Final equity: {result.FinalEquity:0.00}");
     }
 }
 
