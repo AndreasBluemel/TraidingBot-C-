@@ -14,7 +14,7 @@ and clean software architecture, **not** to make money.
 ## Roadmap
 
 - [x] Project setup
-- [ ] Load historical OHLCV data from CSV
+- [x] Load historical OHLCV data from CSV
 - [ ] Indicators (SMA)
 - [ ] Strategy interface + SMA crossover strategy
 - [ ] Backtester (fees, slippage, in-sample / out-of-sample split)
